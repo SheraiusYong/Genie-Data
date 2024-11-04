@@ -1,0 +1,27 @@
+import openpyxl
+import pandas as pd
+df1 = pd.read_excel('data/Genie Dataset 1.xlsx')
+df3 = pd.read_excel('data/Genie Dataset 3.xlsx')
+# Convert date columns to datetime format for df1
+df1_date_cols = ['Date Settled', 'Agrt Date']
+for df1_col in df1_date_cols:
+    df1[df1_col] = pd.to_datetime(df1[df1_col], errors='coerce')
+# Convert date columns to datetime format for df3
+df3_date_cols = ['1st Appr Date', 'Appr Date', 'Comm Date', 'Agrt Date', 'Last Pd Date', 'Notice Date']
+for col in df3_date_cols:
+    df3[col] = pd.to_datetime(df3[col], errors='coerce')
+# Convert '% of Selling Price' to numeric for df3
+df3['% of Selling Price'] = pd.to_numeric(df3['% of Selling Price'], errors='coerce')
+
+df1.ffill(inplace=True)  # Forward-fill missing values
+df3.ffill(inplace=True)  # Forward-fill missing values
+df1.drop_duplicates(inplace=True)
+df3.drop_duplicates(inplace=True)
+# Filter data by date range and loan type
+# Sort by Agrt Date (descending) and then by Loan Amt (ascending)
+df1.sort_values(by=['Agrt Date', 'Loan Amt'], ascending=[False, True], inplace=True)
+# Sort by DPD (descending) and then by GL Bal (descending)
+df3.sort_values(by=['DPD', 'GL Bal'], ascending=[False, False], inplace=True)
+
+pd.set_option('display.max_rows', None)
+pd.set_option('display.max_columns', None)
