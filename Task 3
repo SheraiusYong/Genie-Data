@@ -1,0 +1,25 @@
+import pandas as pd# Read Excel files
+
+df1 = pd.read_excel("data/Genie Dataset 1.xlsx")
+
+df4 = pd.read_excel("data/Genie Dataset 4.xlsx")
+
+# Calculate aging days
+
+df1['Aging_Days'] = (pd.to_datetime('today') - df1['Agrt Date']).dt.days# Define aging buckets
+
+bins = [0, 1, 31, 61, 91, float('inf')]
+
+labels = ['M0', 'M1', 'M2', 'M3', '>M3']
+
+df1['Aging_Bucket'] = pd.cut(df1['Aging_Days'], bins=bins, labels=labels)# Group by aging bucket and calculate metrics
+
+result_df = df1.groupby('Aging_Bucket').agg(
+
+    Num_Accounts=('Agrt No.', 'count'),
+
+    Total_GL_Balance=('GL Bal', 'sum')
+
+).reset_index()# Display the results
+
+print(result_df)
