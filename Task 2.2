@@ -1,0 +1,15 @@
+import pandas as pd
+import sqlite3
+
+# Read Excel sheets
+df1 = pd.read_excel('data/Genie Dataset 1.xlsx')
+df3 = pd.read_excel('data/Genie Dataset 3.xlsx')
+
+# Create a SQLite database
+conn = sqlite3.connect('genie_database.db')
+
+# Write DataFrames to SQL tables
+df1.to_sql('dataset1', conn, if_exists='replace', index=False)
+df3.to_sql('dataset3', conn, if_exists='replace', index=False)
+
+conn.close()
